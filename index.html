@@ -74,12 +74,17 @@
         const enemyImage = new Image();
         enemyImage.src = 'enemy.png';
 
+        // 弾丸発射音の読み込み
+        const bulletSound = new Audio('sound.mp4'); // サウンドファイルのパス
+
         function drawPlayer() {
             ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
         }
 
         function createBullet() {
             bullets.push({ x: player.x + player.width / 2 - 30, y: player.y, width: 60, height: 60, speed: 7 }); // 弾のサイズを3倍に設定
+            bulletSound.currentTime = 0; // サウンドの再生位置をリセット
+            bulletSound.play(); // サウンドを再生
         }
 
         function drawBullets() {
@@ -213,3 +218,4 @@
     </script>
 </body>
 </html>
+
