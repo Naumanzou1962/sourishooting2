@@ -50,9 +50,9 @@
         const player = {
             x: canvas.width / 2,
             y: canvas.height - 90,
-            width: 80, // プレイヤー画像を2倍に設定
+            width: 100,
             height: 80,
-            speed: 10,
+            speed: 45,
         };
 
         const bullets = [];
@@ -60,7 +60,6 @@
         let score = 0;
         let gameRunning = true;
         let timeRemaining = 30;
-        let isTouching = false;
 
         // プレイヤー画像の読み込み
         const playerImage = new Image();
@@ -79,7 +78,7 @@
         }
 
         function createBullet() {
-            bullets.push({ x: player.x + player.width / 2 - 30, y: player.y, width: 60, height: 60, speed: 7 }); // 弾のサイズを3倍に設定
+            bullets.push({ x: player.x + player.width / 2 - 10, y: player.y, width: 65, height: 65, speed: 5 });
         }
 
         function drawBullets() {
@@ -95,7 +94,7 @@
 
         function createEnemy() {
             const x = Math.random() * (canvas.width - 40);
-            enemies.push({ x, y: 0, width: 40, height: 40, speed: 2 });
+            enemies.push({ x, y: 0, width: 50, height: 50, speed: 2 });
         }
 
         function drawEnemies() {
@@ -143,37 +142,16 @@
             }
         }
 
-        canvas.addEventListener('touchstart', (e) => {
-            isTouching = true;
-            const touch = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
-            const touchX = touch.clientX - rect.left;
+        document.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
 
-            player.x = touchX - player.width / 2;
-            player.x = Math.max(0, Math.min(player.x, canvas.width - player.width));
-
-            e.preventDefault();
-        });
-
-        canvas.addEventListener('touchmove', (e) => {
-            if (isTouching && gameRunning) {
-                const touch = e.touches[0];
-                const rect = canvas.getBoundingClientRect();
-                const touchX = touch.clientX - rect.left;
-
-                player.x = touchX - player.width / 2;
-                player.x = Math.max(0, Math.min(player.x, canvas.width - player.width));
-
-                e.preventDefault();
-            }
-        });
-
-        canvas.addEventListener('touchend', (e) => {
-            if (isTouching) {
+            if (e.key === 'ArrowLeft' && player.x > 0) {
+                player.x -= player.speed;
+            } else if (e.key === 'ArrowRight' && player.x + player.width < canvas.width) {
+                player.x += player.speed;
+            } else if (e.key === ' ') {
                 createBullet();
             }
-            isTouching = false;
-            e.preventDefault();
         });
 
         setInterval(() => {
@@ -203,13 +181,6 @@
         setTimeout(endGame, 30000); // 30秒後にゲーム終了
 
         gameLoop();
-
-        // リサイズ時のキャンバス対応
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            player.x = Math.min(player.x, canvas.width - player.width);
-        });
     </script>
 </body>
 </html>
